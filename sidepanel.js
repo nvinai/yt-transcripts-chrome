@@ -53,6 +53,21 @@ function promptSplitAction() {
   window.open("https://chatgpt-prompt-splitter.jjdiaz.dev/", "_blank");
 }
 
+// Dark mode toggle functionality
+const darkModeToggle = document.getElementById('dark-mode-toggle');
+darkModeToggle.addEventListener('click', () => {
+  document.body.classList.toggle('dark-mode');
+  const isDarkMode = document.body.classList.contains('dark-mode');
+  chrome.storage.local.set({ darkMode: isDarkMode });
+});
+
+// Apply saved dark mode preference
+chrome.storage.local.get('darkMode', ({ darkMode }) => {
+  if (darkMode) {
+    document.body.classList.add('dark-mode');
+  }
+});
+
 document.getElementById('copy-button').addEventListener('click', copyToClipboard);
 document.getElementById('chat-button').addEventListener('click', openChatGPT);
 document.getElementById('third-button').addEventListener('click', promptSplitAction);

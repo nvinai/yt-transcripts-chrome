@@ -45,18 +45,3 @@ const svg = `<svg viewBox="0 0 500 400" xmlns="http://www.w3.org/2000/svg">
 const outputFile = path.join(__dirname, 'icon.svg');
 fs.writeFileSync(outputFile, svg);
 console.log(`SVG icon updated and saved to ${outputFile}`);
-
-// Load Existing Manifest File
-const manifestPath = path.join(__dirname, 'manifest.json');
-const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
-
-// Add Icons Property
-manifest.icons = {
-  "16": "icon.svg",
-  "48": "icon.svg",
-  "128": "icon.svg"
-};
-
-// Save Updated Manifest File
-fs.writeFileSync(manifestPath, JSON.stringify(manifest, null, 2));
-console.log(`Manifest file updated with new icons: ${JSON.stringify(manifest.icons)}`);
