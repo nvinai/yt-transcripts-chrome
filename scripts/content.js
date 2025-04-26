@@ -55,29 +55,49 @@ function createToast(message) {
 }
 
 // Function to create the overlay
-function createOverlay(extractedTexts) {
-  const overlay = document.createElement("div");
-  Object.assign(overlay.style, {
+function createDrawer(extractedTexts) {
+  const drawer = document.createElement("div");
+  Object.assign(drawer.style, {
     position: "fixed",
-    top: "85px",
-    right: "5px",
+    top: "0",
+    right: "-400px",
+    width: "400px",
+    height: "95%",
     backgroundColor: "rgba(13, 9, 9, 0.9)",
     color: "white",
-    border: "1px solid #ccc",
+    borderLeft: "1px solid #ccc",
     padding: "10px",
     zIndex: "9999",
-    maxHeight: "70vh",
     overflowY: "auto",
     whiteSpace: "pre-wrap",
-    width: "400px",
     fontSize: "14px",
     display: "flex",
     flexDirection: "column",
+    transition: "right 0.3s ease",
   });
-  overlay.textContent = extractedTexts.join(",\n");
+  drawer.setAttribute("role", "dialog");
+  drawer.setAttribute("aria-labelledby", "drawer-header");
+  drawer.setAttribute("aria-hidden", "true");
+
+  const overlay = document.createElement("div");
+  Object.assign(overlay.style, {
+    position: "fixed",
+    top: "0",
+    left: "0",
+    width: "100%",
+    height: "100%",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    zIndex: "9998",
+  });
+  overlay.setAttribute("aria-hidden", "true");
+
+  overlay.addEventListener("click", () => {
+    closeDrawer(drawer, overlay);
+  });
 
   const header = document.createElement("h2");
   header.textContent = "Transcript";
+  header.id = "drawer-header";
   Object.assign(header.style, {
     margin: "0",
     padding: "10px",
@@ -87,38 +107,39 @@ function createOverlay(extractedTexts) {
     backgroundColor: "rgba(255, 255, 255, 0.1)",
     marginBottom: "10px",
   });
-  overlay.insertBefore(header, overlay.firstChild);
+  drawer.appendChild(header);
+
+  const content = document.createElement("div");
+  content.textContent = extractedTexts.join("\n");
+  Object.assign(content.style, {
+    flex: "1",
+    overflowY: "auto",
+  });
+  content.setAttribute("tabindex", "0");
+  drawer.appendChild(content);
 
   const controlsContainer = document.createElement("div");
   Object.assign(controlsContainer.style, {
-    position: "absolute",
-    top: "80px",
-    right: "10px",
     display: "flex",
     flexDirection: "column",
     gap: "10px",
+    marginTop: "10px",
   });
 
-  const closeButton = createButton("x", {
-    position: "absolute",
-    top: "10px",
-    right: "10px",
-    width: "30px",
-    height: "30px",
+  const closeButton = createButton("X", {
     backgroundColor: "grey",
     color: "white",
     border: "none",
-    borderRadius: "50%",
+    padding: "5px 10px",
     cursor: "pointer",
-    fontSize: "12px",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
+    position: "absolute",
+    top: "10px",
+    right: "10px",
   }, () => {
-    overlay.remove();
-    console.log("Overlay closed manually.");
+    closeDrawer(drawer, overlay);
   });
-  overlay.appendChild(closeButton);
+  closeButton.setAttribute("aria-label", "Close drawer");
+  drawer.appendChild(closeButton);
 
   const copyButton = createButton("Copy Text", {
     backgroundColor: "white",
@@ -131,6 +152,7 @@ function createOverlay(extractedTexts) {
       .then(() => createToast("Text copied to clipboard!"))
       .catch((err) => console.error("Failed to copy text: ", err));
   });
+  copyButton.setAttribute("aria-label", "Copy transcript text");
   controlsContainer.appendChild(copyButton);
 
   const openChatGPTButton = createButton("Open ChatGPT", {
@@ -144,6 +166,7 @@ function createOverlay(extractedTexts) {
       window.open("https://chat.openai.com/", "_blank");
     });
   });
+  openChatGPTButton.setAttribute("aria-label", "Open ChatGPT in a new tab");
   controlsContainer.appendChild(openChatGPTButton);
 
   const openPromptSplitterButton = createButton("Open Prompt Splitter", {
@@ -155,37 +178,33 @@ function createOverlay(extractedTexts) {
   }, () => {
     window.open("https://chatgpt-prompt-splitter.jjdiaz.dev/", "_blank");
   });
+  openPromptSplitterButton.setAttribute("aria-label", "Open Prompt Splitter in a new tab");
   controlsContainer.appendChild(openPromptSplitterButton);
 
-  const fontSizeControls = document.createElement("div");
-  Object.assign(fontSizeControls.style, {
-    display: "flex",
-    flexDirection: "row",
-    gap: "5px",
-  });
-
-  const increaseFontSizeButton = createButton("+", {
-    padding: "5px 10px",
-  }, () => {
-    const currentFontSize = parseFloat(window.getComputedStyle(overlay).fontSize);
-    overlay.style.fontSize = `${currentFontSize + 2}px`;
-  });
-
-  const decreaseFontSizeButton = createButton("-", {
-    padding: "5px 10px",
-  }, () => {
-    const currentFontSize = parseFloat(window.getComputedStyle(overlay).fontSize);
-    overlay.style.fontSize = `${currentFontSize - 2}px`;
-  });
-
-  fontSizeControls.appendChild(increaseFontSizeButton);
-  fontSizeControls.appendChild(decreaseFontSizeButton);
-  controlsContainer.appendChild(fontSizeControls);
-
-  overlay.appendChild(controlsContainer);
+  drawer.appendChild(controlsContainer);
   document.body.appendChild(overlay);
+  document.body.appendChild(drawer);
 
-  return overlay;
+  // Slide in the drawer
+  setTimeout(() => {
+    drawer.style.right = "0";
+    drawer.setAttribute("aria-hidden", "false");
+    overlay.setAttribute("aria-hidden", "false");
+    drawer.focus();
+  }, 10);
+
+  return drawer;
+}
+
+function closeDrawer(drawer, overlay) {
+  drawer.style.right = "-400px";
+  drawer.setAttribute("aria-hidden", "true");
+  overlay.setAttribute("aria-hidden", "true");
+  setTimeout(() => {
+    drawer.remove();
+    overlay.remove();
+  }, 300);
+  console.log("Drawer closed.");
 }
 
 async function initializeScript() {
@@ -217,7 +236,7 @@ async function initializeScript() {
       segment.textContent.trim()
     );
 
-    overlay = createOverlay(extractedTexts);
+    overlay = createDrawer(extractedTexts);
 
     // Add event listener to remove overlay on navigation
     window.addEventListener("popstate", () => {
@@ -230,3 +249,10 @@ async function initializeScript() {
     console.error(error.message);
   }
 }
+
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  if (message.action === "viewTranscripts") {
+    initializeScript();
+    sendResponse({ status: "drawerOpened" });
+  }
+});
