@@ -3,10 +3,13 @@
   "name": "Text Extractor",
   "version": "1.0",
   "description": "Extracts transcripts from youtube videos which have them.",
-  "permissions": ["activeTab", "scripting", "tabs"],
+  "permissions": ["activeTab", "scripting", "tabs", "sidePanel", "contextMenus", "storage"],
   "host_permissions": ["<all_urls>"],
   "background": {
     "service_worker": "background.js"
+  },
+  "side_panel": {
+    "default_path": "sidepanel.html"
   },
   "action": {
     "default_popup": "scripts/popup.html"

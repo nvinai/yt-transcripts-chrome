@@ -206,7 +206,18 @@ function closeDrawer(drawer, overlay) {
   }, 300);
   console.log("Drawer closed.");
 }
+// Function to send content to the background script
+function sendContentToSidePanel(content) {
+  chrome.runtime.sendMessage({ action: "updateSidePanel", content }, (response) => {
+    if (chrome.runtime.lastError) {
+      console.error("Error sending message to background script:", chrome.runtime.lastError);
+    } else {
+      console.log("Response from background script:", response);
+    }
+  });
+}
 
+// Example usage: Extracted text can be sent to the side panel
 async function initializeScript() {
   if (!window.location.href.match(/youtube\.com\/watch\?./)) {
     console.log(
@@ -237,6 +248,9 @@ async function initializeScript() {
     );
 
     overlay = createDrawer(extractedTexts);
+
+    // Send the extracted text to the side panel
+    sendContentToSidePanel(extractedTexts.join("\n"));
 
     // Add event listener to remove overlay on navigation
     window.addEventListener("popstate", () => {
