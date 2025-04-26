@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Side Panel</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 10px;
+      background-color: #f9f9f9;
+    }
+    #content {
+      white-space: pre-wrap;
+      font-size: 14px;
+      margin-bottom: 20px;
+    }
+    .controls-container {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      margin-top: 20px;
+    }
+    .controls-container button {
+      padding: 10px;
+      font-size: 14px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    .controls-container button:hover {
+      background-color: #ddd;
+    }
+    .controls-container button.copy {
+      background-color: #4CAF50;
+      color: white;
+    }
+    .controls-container button.chat {
+      background-color: #008CBA;
+      color: white;
+    }
+    .controls-container button.third {
+      background-color: #f44336;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+  <h1>Transcript</h1>
+  <div id="content">Loading...</div>
+  <div class="controls-container">
+    <button id="copy-button" class="copy">Copy to Clipboard</button>
+    <button id="chat-button" class="chat">Open ChatGPT</button>
+    <button id="third-button" class="third">Split Large Transcript</button>
+  </div>
+  <script src="sidepanel.js"></script>
+</body>
+</html>
