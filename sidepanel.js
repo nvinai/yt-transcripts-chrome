@@ -10,11 +10,31 @@ chrome.storage.session.onChanged.addListener((changes) => {
   }
 });
 
+// Utility function to create a toast notification
+function createToast(message) {
+    const toast = document.createElement("div");
+    toast.textContent = message;
+    Object.assign(toast.style, {
+      position: "fixed",
+      top: "1px",
+      right: "20px",
+      fontSize: "14px",
+      backgroundColor: "#34b7eb",
+      color: "#f7fdff",
+      padding: "10px 20px",
+      borderRadius: "5px",
+      boxShadow: "0 2px 5px rgba(0, 0, 0, 0.3)",
+      zIndex: "10000",
+    });
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 3000);
+  }
+
 // Copy content to clipboard
 function copyToClipboard() {
   const content = document.getElementById('content').textContent;
   navigator.clipboard.writeText(content).then(() => {
-    alert('Transcript copied to clipboard!');
+    createToast('Text copied to clipboard!');
   }).catch(err => {
     console.error('Failed to copy text: ', err);
   });

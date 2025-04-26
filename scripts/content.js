@@ -34,25 +34,6 @@ function createButton(text, styles, onClick) {
   return button;
 }
 
-// Utility function to create a toast notification
-function createToast(message) {
-  const toast = document.createElement("div");
-  toast.textContent = message;
-  Object.assign(toast.style, {
-    position: "fixed",
-    top: "1px",
-    right: "20px",
-    fontSize: "14px",
-    backgroundColor: "white",
-    color: "black",
-    padding: "10px 20px",
-    borderRadius: "5px",
-    boxShadow: "0 2px 5px rgba(0, 0, 0, 0.3)",
-    zIndex: "10000",
-  });
-  document.body.appendChild(toast);
-  setTimeout(() => toast.remove(), 3000);
-}
 
 // Removed overlay and related UI elements
 // Function to send content to the background script

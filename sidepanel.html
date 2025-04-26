@@ -20,7 +20,8 @@
       display: flex;
       flex-direction: column;
       gap: 15px;
-      margin-top: 20px;
+      margin-top: 25px;
+      margin-bottom: 25px;
     }
     .controls-container button {
       padding: 10px;
@@ -49,12 +50,12 @@
 </head>
 <body>
   <h1>Transcript</h1>
-  <div id="content">Loading...</div>
   <div class="controls-container">
     <button id="copy-button" class="copy">Copy to Clipboard</button>
     <button id="chat-button" class="chat">Open ChatGPT</button>
     <button id="third-button" class="third">Split Large Transcript</button>
   </div>
+  <div id="content">Loading...</div>
   <script src="sidepanel.js"></script>
 </body>
 </html>
